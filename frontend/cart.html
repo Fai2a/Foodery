@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Foodery - Cart</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f0fff4, #f7f7f7);
+      color: #333;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    header a {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: 600;
+    }
+    #cart-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .cart-item {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      background: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: 0.3s;
+    }
+    .cart-item:hover {
+      transform: scale(1.01);
+    }
+    .cart-item img {
+      width: 90px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .controls button {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 6px;
+    }
+    .controls .qty {
+      font-weight: 700;
+      padding: 6px 10px;
+    }
+    .controls .remove {
+      background: #e74c3c;
+      color: #fff;
+    }
+    .controls .plusminus {
+      background: #3498db;
+      color: #fff;
+    }
+    #total {
+      font-size: 20px;
+      text-align: right;
+      margin-top: 12px;
+      color: #27ae60;
+      font-weight: 700;
+    }
+    #checkout-btn {
+      display: block;
+      margin-left: auto;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.3s;
+      text-align: center;
+      width: fit-content;
+    }
+    #checkout-btn:hover {
+      background: #219150;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Your Cart</h1>
+    <a href="./menu.html">← Continue Shopping</a>
+  </header>
+
+  <main id="cart-container">
+    <p>Loading cart...</p>
+  </main>
+
+  <div id="total"></div>
+  <a href="./order.html" id="checkout-btn" style="display:none;">Proceed to Checkout</a>
+
+  <script>
+    const API_CART = "http://localhost:5000/api/cart";
+    const userId = "user123"; // Replace with actual user ID later
+
+    function toPublicImage(src) {
+      if (!src) return "https://via.placeholder.com/100"; 
+      return src.startsWith("/") ? `http://localhost:5000${src}` :
+             (src.startsWith("http") ? src : `http://localhost:5000/${src}`);
+    }
+
+    async function fetchCart() {
+      const container = document.getElementById("cart-container");
+      const checkoutBtn = document.getElementById("checkout-btn");
+      try {
+        const res = await fetch(`${API_CART}/${userId}`);
+        const data = await res.json();
+        const items = data.items || [];
+
+        if (items.length === 0) {
+          container.innerHTML = "<p>Your cart is empty.</p>";
+          document.getElementById("total").innerText = "";
+          checkoutBtn.style.display = "none";
+          return;
+        }
+
+        let total = 0;
+        container.innerHTML = "";
+        items.forEach(i => {
+          const menu = i.menuId;
+          if (!menu) return; // Skip invalid items
+          const qty = i.quantity || 1;
+          total += (menu.price || 0) * qty;
+
+          const div = document.createElement("div");
+          div.className = "cart-item";
+          div.innerHTML = `
+            <img src="${toPublicImage(menu.image)}" alt="${menu.name}" />
+            <div style="flex:1">
+              <h3 style="margin:0">${menu.name}</h3>
+              <p style="margin:6px 0">Rs. ${menu.price}</p>
+            </div>
+            <div class="controls">
+              <button class="plusminus" data-id="${menu._id}" data-new="${qty-1}">-</button>
+              <span class="qty">${qty}</span>
+              <button class="plusminus" data-id="${menu._id}" data-new="${qty+1}">+</button>
+              <button class="remove" data-id="${menu._id}">Remove</button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+
+        document.getElementById("total").innerText = `Total: Rs. ${total}`;
+        checkoutBtn.style.display = "block";
+
+        document.querySelectorAll(".controls .plusminus").forEach(btn => {
+          btn.addEventListener("click", async (e) => {
+            const menuId = e.currentTarget.dataset.id;
+            const newQty = Number(e.currentTarget.dataset.new);
+            await updateQuantity(menuId, newQty);
+          });
+        });
+
+        document.querySelectorAll(".controls .remove").forEach(btn => {
+          btn.addEventListener("click", async (e) => {
+            const menuId = e.currentTarget.dataset.id;
+            await removeItem(menuId);
+          });
+        });
+
+      } catch (err) {
+        console.error("Fetch cart error:", err);
+        container.innerHTML = "<p>Failed to load cart. Please check server connection.</p>";
+      }
+    }
+
+    async function updateQuantity(menuId, quantity) {
+      try {
+        await fetch(`${API_CART}/${userId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ menuId, quantity })
+        });
+        await fetchCart();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function removeItem(menuId) {
+      try {
+        await fetch(`${API_CART}/${userId}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ menuId })
+        });
+        await fetchCart();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchCart);
+  </script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foodery - Fast Food Restaurant</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome Fix -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">Foodery</div>
+    <nav id="navbar">
+      <ul>
+        <li><a href="./index.html" class="active">Home</a></li>
+        <li><a href="./about.html">About</a></li>
+        <li><a href="./menu.html">Menu</a></li>
+        <li><a href="./reservation.html">Reservation</a></li>
+        <li><a href="./contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="icons">
+      <a href="#"><i class="fas fa-shopping-cart"></i></a>
+      <a href="#" class="btn">Order Online</a>
+      <div class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Fast Food Restaurant</h1>
+      <p>
+        Delicious, quick and fresh meals just for you. Enjoy our signature burgers,
+        fries and much more with fast delivery and amazing taste.
+      </p>
+      <a href="#" class="btn">Order Now</a>
+    </div>
+    <div class="hero-img">
+      <img src="./assets/images/burger.jpg" alt="Burger and Fries">
+    </div>
+  </section>
+
+  <!-- Menu Section -->
+  <section class="menu-section" id="menu">
+    <h2>Our Menu</h2>
+    <div class="menu-filter">
+      <button class="filter-btn active" data-category="all">All</button>
+      <button class="filter-btn" data-category="burger">Burger</button>
+      <button class="filter-btn" data-category="pizza">Pizza</button>
+      <button class="filter-btn" data-category="pasta">Pasta</button>
+      <button class="filter-btn" data-category="fries">Fries</button>
+    </div>
+
+    <div class="menu-container">
+      <!-- Burger -->
+      <div class="menu-item burger">
+        <img src="./assets/images/burger.jpg" alt="Burger">
+        <div class="menu-info">
+          <h3>Delicious Burger</h3>
+          <p>Juicy beef patty with cheese and lettuce.</p>
+          <span>$15</span>
+        </div>
+      </div>
+
+      <!-- Pizza -->
+      <div class="menu-item pizza">
+        <img src="./assets/images/pizza.jpg" alt="Pizza">
+        <div class="menu-info">
+          <h3>Delicious Pizza</h3>
+          <p>Cheesy pizza loaded with toppings.</p>
+          <span>$20</span>
+        </div>
+      </div>
+
+      <div class="menu-item pizza">
+        <img src="./assets/images/pizza2.jpg" alt="Veggie Pizza">
+        <div class="menu-info">
+          <h3>Veggie Pizza</h3>
+          <p>Loaded with fresh vegetables and cheese.</p>
+          <span>$17</span>
+        </div>
+      </div>
+
+      <!-- Pasta -->
+      <div class="menu-item pasta">
+        <img src="./assets/images/pasta.jpg" alt="Pasta">
+        <div class="menu-info">
+          <h3>Delicious Pasta</h3>
+          <p>Italian pasta with rich sauce.</p>
+          <span>$12</span>
+        </div>
+      </div>
+
+      <!-- Fries -->
+      <div class="menu-item fries">
+        <img src="./assets/images/fries.jpg" alt="Fries">
+        <div class="menu-info">
+          <h3>French Fries</h3>
+          <p>Crispy golden fries with ketchup.</p>
+          <span>$8</span>
+        </div>
+      </div>
+      <div class="menu-item burger">
+        <img src="./assets/images/burger2.jpg" alt="Burger">
+        <div class="menu-info">
+          <h3>Delicious Burger</h3>
+          <p>Juicy beef patty with cheese and lettuce.</p>
+          <span>$15</span>
+        </div>
+      </div>
+      <div class="menu-item pizza">
+        <img src="./assets/images/pizza.jpg" alt="Pizza">
+        <div class="menu-info">
+          <h3>Delicious Pizza</h3>
+          <p>Cheesy pizza loaded with toppings.</p>
+          <span>$20</span>
+        </div>
+      </div>
+      <div class="menu-item pasta">
+        <img src="./assets/images/pasta2.jpg" alt="Pasta">
+        <div class="menu-info">
+          <h3>Delicious Pasta</h3>
+          <p>White creamy pasta with rich sauce.</p>
+          <span>$12</span>
+        </div>
+      </div>
+      <div class="menu-item fries">
+        <img src="./assets/images/fries2.jpg" alt="Fries">
+        <div class="menu-info">
+          <h3>Loaded Fries</h3>
+          <p>Crispy golden fries with ketchup.</p>
+          <span>$8</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section (Added Below Menu) -->
+  <section class="about-section" id="about">
+    <div>
+      <img src="./assets/images/animmated.png" alt="Burger Layers">
+    </div>
+    <div class="about-content">
+      <h2>We Are Feane</h2>
+      <p>
+        Welcome to <b>Foodery</b>, where flavor meets passion!
+        We are dedicated to serving you the freshest and most delicious fast food,
+        crafted with high-quality ingredients and a touch of love.
+        From juicy burgers to cheesy pizzas, creamy pastas and crispy fries — every bite is
+        designed to give you the ultimate taste experience.
+        At Foodery, food is not just a meal — it’s happiness on a plate!
+      </p>
+      <a href="#" class="btn">Read More</a>
+    </div>
+  </section>
+  <section class="testimonials" id="testimonials">
+    <h2>What Our Customers Say</h2>
+
+    <div class="testimonial-cards">
+      <!-- Card 1 -->
+      <div class="testimonial-card">
+        <img src="https://i.pravatar.cc/100?img=12" alt="Customer" class="testimonial-img">
+        <p>"Feane food is delicious and delivery is always on time! Highly recommended."</p>
+        <h4>Ali</h4>
+        <span>Lahore</span>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="testimonial-card">
+        <img src="https://i.pravatar.cc/100?img=47" alt="Customer" class="testimonial-img">
+        <p>"Great service and tasty food. I always enjoy ordering from here."</p>
+        <h4>Sara</h4>
+        <span>Karachi</span>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="testimonial-card">
+        <img src="https://i.pravatar.cc/100?img=22" alt="Customer" class="testimonial-img">
+        <p>"Best experience ever! Fresh and hot food every time."</p>
+        <h4>Hamza</h4>
+        <span>Islamabad</span>
+      </div>
+    </div>
+  </section>
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-container">
+
+      <!-- Left: Contact -->
+      <div class="footer-left">
+        <h3>Contact Us</h3>
+        <p>📞 +92 300 1234567</p>
+        <p>📧 support@foodery.com</p>
+      </div>
+
+      <!-- Center: Social Links -->
+      <div class="footer-center">
+        <h3>Follow Us</h3>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="copyright">© 2025 All Rights Reserved By Foodery</p>
+      </div>
+
+      <!-- Right: Opening Hours -->
+      <div class="footer-right">
+        <h3>Opening Hours</h3>
+        <p>Mon - Fri: 10:00 AM - 11:00 PM</p>
+        <p>Sat - Sun: 12:00 PM - 12:00 AM</p>
+      </div>
+
+    </div>
+  </footer>
+  <!-- Scripts -->
+  <script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
+  <script src="./assets/js/main.js"></script>
+</body>
+
+</html>

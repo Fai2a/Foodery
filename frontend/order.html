@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - Foodery</title>
+  <style>
+    body { font-family: Poppins, sans-serif; background:#fafafa; padding:20px; }
+    h1 { text-align:center; color:#27ae60; }
+    form {
+      max-width:500px;
+      margin:30px auto;
+      background:white;
+      padding:20px;
+      border-radius:8px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    input, textarea {
+      width:100%;
+      padding:10px;
+      margin-bottom:12px;
+      border:1px solid #ddd;
+      border-radius:6px;
+      font-size:15px;
+    }
+    button {
+      background:#27ae60;
+      color:white;
+      padding:10px 15px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:16px;
+      width:100%;
+    }
+    button:hover { background:#219150; }
+    p { text-align:center; color:#555; }
+  </style>
+</head>
+<body>
+  <h1>Checkout</h1>
+  <form id="checkout-form">
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="text" name="phone" placeholder="Phone Number" required />
+    <textarea name="address" placeholder="Delivery Address" required></textarea>
+    <button type="submit">Place Order (Cash on Delivery)</button>
+  </form>
+  <p id="msg"></p>
+
+  <script>
+    const API_CHECKOUT = "http://localhost:5000/api/orders"; // ✅ fixed endpoint
+    const API_CART = "http://localhost:5000/api/cart";
+    const userId = "user123";
+
+    document.getElementById("checkout-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const name = form.name.value.trim();
+      const phone = form.phone.value.trim();
+      const address = form.address.value.trim();
+      const msgEl = document.getElementById("msg");
+
+      try {
+        // Get current cart items
+        const res = await fetch(`${API_CART}/${userId}`);
+        const cartData = await res.json();
+        const items = cartData.items || [];
+
+        if (items.length === 0) {
+          msgEl.style.color = "red";
+          msgEl.innerText = "Your cart is empty.";
+          return;
+        }
+
+        const totalAmount = items.reduce((acc, i) => acc + (i.menuId.price * i.quantity), 0);
+
+        // Send order
+        const orderRes = await fetch(API_CHECKOUT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, name, phone, address, items, totalAmount })
+        });
+
+        const data = await orderRes.json();
+
+        if (orderRes.ok) { // ✅ check using orderRes.ok instead of data.success
+          msgEl.style.color = "green";
+          msgEl.innerText = "✅ Order placed successfully! Thank you.";
+          form.reset();
+
+          // Clear cart after success
+          await fetch(`${API_CART}/${userId}`, { method: "DELETE" });
+        } else {
+          msgEl.style.color = "red";
+          msgEl.innerText = data.error || "Order failed.";
+        }
+
+      } catch (err) {
+        console.error("Order Error:", err);
+        msgEl.style.color = "red";
+        msgEl.innerText = "Error placing order.";
+      }
+    });
+  </script>
+</body>
+</html>
