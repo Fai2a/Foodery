@@ -46,6 +46,36 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+// 🔄 Update item quantity (for plus/minus)
+router.put("/:userId/:menuId", async (req, res) => {
+  try {
+    const { userId, menuId } = req.params;
+    const { quantity } = req.body;
+
+    if (!quantity || quantity < 1) {
+      return res.status(400).json({ error: "Quantity must be 1 or more." });
+    }
+
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+
+    const item = cart.items.find((i) => i.menuId.toString() === menuId);
+    if (!item) {
+      return res.status(404).json({ error: "Item not found in cart" });
+    }
+
+    item.quantity = quantity;
+    await cart.save();
+
+    res.json({ message: "Quantity updated", cart });
+  } catch (err) {
+    console.error("Update item quantity error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // 🗑️ Delete a specific item
 router.delete("/:userId/:menuId", async (req, res) => {
   try {

@@ -108,7 +108,7 @@
 
   <script>
     const API_CART = "http://localhost:5000/api/cart";
-    const userId = "user123"; // Replace with actual user ID later
+    const userId = "user123"; // demo user
 
     function toPublicImage(src) {
       if (!src) return "https://via.placeholder.com/100"; 
@@ -116,6 +116,7 @@
              (src.startsWith("http") ? src : `http://localhost:5000/${src}`);
     }
 
+    // ✅ Fetch cart items
     async function fetchCart() {
       const container = document.getElementById("cart-container");
       const checkoutBtn = document.getElementById("checkout-btn");
@@ -135,7 +136,7 @@
         container.innerHTML = "";
         items.forEach(i => {
           const menu = i.menuId;
-          if (!menu) return; // Skip invalid items
+          if (!menu) return;
           const qty = i.quantity || 1;
           total += (menu.price || 0) * qty;
 
@@ -148,9 +149,9 @@
               <p style="margin:6px 0">Rs. ${menu.price}</p>
             </div>
             <div class="controls">
-              <button class="plusminus" data-id="${menu._id}" data-new="${qty-1}">-</button>
+              <button class="plusminus minus" data-id="${menu._id}" data-qty="${qty}">-</button>
               <span class="qty">${qty}</span>
-              <button class="plusminus" data-id="${menu._id}" data-new="${qty+1}">+</button>
+              <button class="plusminus plus" data-id="${menu._id}" data-qty="${qty}">+</button>
               <button class="remove" data-id="${menu._id}">Remove</button>
             </div>
           `;
@@ -160,17 +161,39 @@
         document.getElementById("total").innerText = `Total: Rs. ${total}`;
         checkoutBtn.style.display = "block";
 
-        document.querySelectorAll(".controls .plusminus").forEach(btn => {
+        // ✅ Plus button (Increase quantity)
+        document.querySelectorAll(".plus").forEach(btn => {
           btn.addEventListener("click", async (e) => {
             const menuId = e.currentTarget.dataset.id;
-            const newQty = Number(e.currentTarget.dataset.new);
+            const qtySpan = e.currentTarget.closest(".controls").querySelector(".qty");
+            const currentQty = parseInt(qtySpan.textContent);
+            const newQty = currentQty + 1;
+            console.log(`Increasing ${menuId} from ${currentQty} → ${newQty}`);
             await updateQuantity(menuId, newQty);
           });
         });
 
-        document.querySelectorAll(".controls .remove").forEach(btn => {
+        // ✅ Minus button (Decrease quantity)
+        document.querySelectorAll(".minus").forEach(btn => {
           btn.addEventListener("click", async (e) => {
             const menuId = e.currentTarget.dataset.id;
+            const qtySpan = e.currentTarget.closest(".controls").querySelector(".qty");
+            const currentQty = parseInt(qtySpan.textContent);
+            const newQty = currentQty - 1;
+            console.log(`Decreasing ${menuId} from ${currentQty} → ${newQty}`);
+            if (newQty >= 1) {
+              await updateQuantity(menuId, newQty);
+            } else {
+              await removeItem(menuId);
+            }
+          });
+        });
+
+        // ✅ Remove button
+        document.querySelectorAll(".remove").forEach(btn => {
+          btn.addEventListener("click", async (e) => {
+            const menuId = e.currentTarget.dataset.id;
+            console.log(`Removing item: ${menuId}`);
             await removeItem(menuId);
           });
         });
@@ -181,29 +204,35 @@
       }
     }
 
+    // ✅ Update item quantity (PUT request)
     async function updateQuantity(menuId, quantity) {
       try {
-        await fetch(`${API_CART}/${userId}`, {
+        console.log(`PUT ${API_CART}/${userId}/${menuId}`, { quantity });
+        const res = await fetch(`${API_CART}/${userId}/${menuId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ menuId, quantity })
+          body: JSON.stringify({ quantity })
         });
+        const data = await res.json();
+        console.log("Update response:", data);
         await fetchCart();
       } catch (err) {
-        console.error(err);
+        console.error("Update error:", err);
       }
     }
 
+    // ✅ Remove item (DELETE request)
     async function removeItem(menuId) {
       try {
-        await fetch(`${API_CART}/${userId}`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ menuId })
+        console.log(`DELETE ${API_CART}/${userId}/${menuId}`);
+        const res = await fetch(`${API_CART}/${userId}/${menuId}`, {
+          method: "DELETE"
         });
+        const data = await res.json();
+        console.log("Delete response:", data);
         await fetchCart();
       } catch (err) {
-        console.error(err);
+        console.error("Remove error:", err);
       }
     }
 
